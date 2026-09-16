@@ -1,0 +1,6 @@
+{
+  "name": "Portfólio de Links",
+  "description": "Portfólio profissional para reunir links, redes e projetos, facilmente editável e salvo direto no código.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
