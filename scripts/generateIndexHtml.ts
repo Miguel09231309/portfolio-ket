@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+import fs from 'fs';
+import { INITIAL_PORTFOLIO_DATA, TRIMESTER_TOPICS } from '../src/portfolioData';
+
+const configJson = JSON.stringify(INITIAL_PORTFOLIO_DATA, null, 2);
+const topicsJson = JSON.stringify(TRIMESTER_TOPICS, null, 2);
+
+const standaloneHtml = `<!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
   <meta charset="UTF-8" />
@@ -72,533 +78,8 @@
   <script>
     (function() {
       // Dados iniciais salvos diretamente no código
-      const INITIAL_DATA = {
-  "profile": {
-    "name": "Keth",
-    "role": "Desenvolvedora Front-End • Técnica em Desenvolvimento de Sistemas",
-    "bio": "Desenvolvedora apaixonada por criar interfaces modernas e intuitivas no Colégio Unidade Polo. Aplico conhecimentos em HTML, CSS, JavaScript, React e Inteligência Artificial.",
-    "avatarUrl": "",
-    "location": "Arapongas, Paraná, Brasil",
-    "email": "",
-    "availableForWork": true,
-    "statusText": "Projetos em HTML, JavaScript & Google AI",
-    "socialLinks": []
-  },
-  "categories": [
-    {
-      "id": "1-trimestre",
-      "name": "1º Trimestre",
-      "description": "Projetos e exercícios em HTML e JavaScript",
-      "icon": "Calendar"
-    },
-    {
-      "id": "2-trimestre",
-      "name": "2º Trimestre",
-      "description": "Projetos em HTML, JavaScript e Google AI",
-      "icon": "Calendar"
-    },
-    {
-      "id": "3-trimestre",
-      "name": "3º Trimestre",
-      "description": "Projetos e avanços em HTML e JavaScript",
-      "icon": "Calendar"
-    }
-  ],
-  "links": [
-    {
-      "id": "q1-html-teste",
-      "title": "Teste",
-      "url": "https://alifer2211.github.io/teste.html/teste.html",
-      "description": "Página de teste de estrutura HTML",
-      "categoryId": "1-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Code2",
-      "clicks": 0
-    },
-    {
-      "id": "q1-html-jogo",
-      "title": "Jogo",
-      "url": "https://alifer2211.github.io/jogo/jogo.html",
-      "description": "Projeto interativo de jogo desenvolvido em HTML",
-      "categoryId": "1-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Gamepad2",
-      "clicks": 0
-    },
-    {
-      "id": "q1-html-jogo-2048",
-      "title": "Jogo 2048",
-      "url": "https://alifer2211.github.io/jogo-2048/jogo.html",
-      "description": "Recriação do famoso quebra-cabeça 2048 em HTML",
-      "categoryId": "1-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Gamepad2",
-      "clicks": 0
-    },
-    {
-      "id": "q1-html-todos-gamma",
-      "title": "Todos do gamma",
-      "url": "https://miguel09231309.github.io/links/links.html",
-      "description": "Central de apresentações e documentos Gamma",
-      "categoryId": "1-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Layers",
-      "clicks": 0
-    },
-    {
-      "id": "q1-html-pac-man",
-      "title": "Pac-Man",
-      "url": "https://miguel09231309.github.io/Pac-Man/pac-man.html",
-      "description": "Jogo do Pac-Man com labirinto e animações em HTML",
-      "categoryId": "1-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Gamepad2",
-      "clicks": 0
-    },
-    {
-      "id": "q1-html-snack-expo",
-      "title": "Snack expo",
-      "url": "https://miguel09231309.github.io/snack-expo/snack.html",
-      "description": "Exposições e protótipos de apps Snack Expo",
-      "categoryId": "1-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Smartphone",
-      "clicks": 0
-    },
-    {
-      "id": "q1-html-links-docs",
-      "title": "Links docs",
-      "url": "https://miguel09231309.github.io/linksdocs/linkdocs.html",
-      "description": "Links de documentações de estudo e pesquisa",
-      "categoryId": "1-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "BookOpen",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-teste",
-      "title": "Teste",
-      "url": "https://alifer2211.github.io/teste.js/teste.js",
-      "description": "Testes iniciais de sintaxe e comandos JavaScript",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-teste2",
-      "title": "Teste2",
-      "url": "https://alifer2211.github.io/teste2.js/teste2.js",
-      "description": "Exercício de estruturas de controle e variáveis",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-teste3",
-      "title": "Teste3",
-      "url": "https://alifer2211.github.io/teste3.js/teste3.js",
-      "description": "Fixação e operadores relacionais e lógicos",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-carro",
-      "title": "Carro",
-      "url": "https://alifer2211.github.io/carro.js/carro.js",
-      "description": "Simulação de propriedades e métodos de um carro em JS",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Cpu",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-notas",
-      "title": "Notas",
-      "url": "https://alifer2211.github.io/notas.js/notas.js",
-      "description": "Algoritmo para conferência e cálculo de notas",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "GraduationCap",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-media",
-      "title": "Media",
-      "url": "https://alifer2211.github.io/media/media_se.js",
-      "description": "Cálculo de média com condicionais se / senão (if/else)",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Binary",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-variaveis",
-      "title": "Variaveis",
-      "url": "https://alifer2211.github.io/variaveis.js/variaveis.js",
-      "description": "Demonstração prática de tipos e declaração de variáveis",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-brake",
-      "title": "Brake",
-      "url": "https://miguel09231309.github.io/brake_continue/brake_continue.js",
-      "description": "Uso prático de laços com break e continue em JavaScript",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Repeat",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-objeto",
-      "title": "Objeto",
-      "url": "https://miguel09231309.github.io/objeto/objeto.js",
-      "description": "Criação e manipulação de objetos e propriedades em JS",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Boxes",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-filtrar",
-      "title": "Filtrar",
-      "url": "https://miguel09231309.github.io/Filtrar/Filtrar.js",
-      "description": "Filtragem dinâmica de dados e arrays em JavaScript",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Filter",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-2js",
-      "title": "2js",
-      "url": "https://github.com/Miguel09231309/2js",
-      "description": "Repositório GitHub com coleção de exercícios JS",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Github",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-4js",
-      "title": "4js",
-      "url": "https://github.com/Miguel09231309/4js",
-      "description": "Repositório GitHub com algoritmos e desafios JS",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Github",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-conjunto",
-      "title": "Conjunto",
-      "url": "https://miguel09231309.github.io/conjuntonumero/conjuntonumero.js",
-      "description": "Manipulação de conjuntos numéricos e operações lógicas",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Binary",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-exercicio",
-      "title": "Exercicio",
-      "url": "https://miguel09231309.github.io/exercicio/exercicio.js",
-      "description": "Exercício prático de resolução de problemas com JS",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Code2",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-frutas",
-      "title": "Frutas",
-      "url": "https://miguel09231309.github.io/frutas/frutas.js",
-      "description": "Listagem, busca e ordenação de dados em vetor",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "ListFilter",
-      "clicks": 0
-    },
-    {
-      "id": "q1-js-lista-livros",
-      "title": "Lista livros",
-      "url": "https://miguel09231309.github.io/listalivros/listalivros.js",
-      "description": "Catálogo e gerenciamento de lista de livros com JS",
-      "categoryId": "1-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "BookOpen",
-      "clicks": 0
-    },
-    {
-      "id": "q2-html-locafacil",
-      "title": "LocaFacíl",
-      "url": "https://locafacil-vb33.onrender.com/",
-      "description": "Plataforma web LocaFácil hospedada e funcional no Render",
-      "categoryId": "2-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Globe",
-      "clicks": 0
-    },
-    {
-      "id": "q2-html-fuelsense",
-      "title": "FuelSense",
-      "url": "https://benign-rota-flow-go.base44.app",
-      "description": "Aplicação FuelSense para monitoramento e gestão eficiente",
-      "categoryId": "2-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Compass",
-      "clicks": 0
-    },
-    {
-      "id": "q2-html-exemplo-c",
-      "title": "Exemplo HTML C",
-      "url": "https://example.com/q2-html-c",
-      "description": "Projeto estrutural e semântico em HTML",
-      "categoryId": "2-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Code2",
-      "clicks": 0
-    },
-    {
-      "id": "q2-js-exemplo-a",
-      "title": "Exemplo JS A",
-      "url": "https://example.com/q2-js-a",
-      "description": "Demonstração de scripts dinâmicos e eventos",
-      "categoryId": "2-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q2-js-exemplo-b",
-      "title": "Exemplo JS B",
-      "url": "https://example.com/q2-js-b",
-      "description": "Interatividade com manipulação avançada de DOM",
-      "categoryId": "2-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q2-js-exemplo-c",
-      "title": "Exemplo JS C",
-      "url": "https://example.com/q2-js-c",
-      "description": "Consumo de dados e lógica assíncrona",
-      "categoryId": "2-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q2-ai-easy-financas",
-      "title": "Easy Finanças",
-      "url": "https://miguel09231309.github.io/Financia/index.html",
-      "description": "Aplicativo de gestão financeira potencializado com Inteligência Artificial",
-      "categoryId": "2-trimestre",
-      "topic": "google-ai",
-      "badge": "Google AI",
-      "icon": "Sparkles",
-      "clicks": 0
-    },
-    {
-      "id": "q2-ai-pet-shop",
-      "title": "Pet-Shop",
-      "url": "https://miguel09231309.github.io/pet-shop/index.html",
-      "description": "Plataforma interativa para Pet Shop com recomendações inteligentes",
-      "categoryId": "2-trimestre",
-      "topic": "google-ai",
-      "badge": "Google AI",
-      "icon": "Sparkles",
-      "clicks": 0
-    },
-    {
-      "id": "q2-ai-class-edu",
-      "title": "Class-Edu",
-      "url": "https://miguel09231309.github.io/Class-Edu/index.html",
-      "description": "Ambiente educacional inteligente para apoio ao aprendizado",
-      "categoryId": "2-trimestre",
-      "topic": "google-ai",
-      "badge": "Google AI",
-      "icon": "Sparkles",
-      "clicks": 0
-    },
-    {
-      "id": "q2-ai-codelingo",
-      "title": "CodeLingo",
-      "url": "https://miguel09231309.github.io/CodeLingo/index.html",
-      "description": "Plataforma para aprender programação e linguagens com auxílio de IA",
-      "categoryId": "2-trimestre",
-      "topic": "google-ai",
-      "badge": "Google AI",
-      "icon": "Sparkles",
-      "clicks": 0
-    },
-    {
-      "id": "q2-ai-academia",
-      "title": "Academia",
-      "url": "https://miguel09231309.github.io/Academia/index.html",
-      "description": "Sistema para treino, fichas e condicionamento com IA",
-      "categoryId": "2-trimestre",
-      "topic": "google-ai",
-      "badge": "Google AI",
-      "icon": "Sparkles",
-      "clicks": 0
-    },
-    {
-      "id": "q3-html-exemplo-a",
-      "title": "Exemplo Q3 HTML A",
-      "url": "https://example.com/q3-html-a",
-      "description": "Projetos avançados de interfaces em HTML5",
-      "categoryId": "3-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Code2",
-      "clicks": 0
-    },
-    {
-      "id": "q3-html-exemplo-b",
-      "title": "Exemplo Q3 HTML B",
-      "url": "https://example.com/q3-html-b",
-      "description": "Estruturação semântica e boas práticas para web",
-      "categoryId": "3-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Code2",
-      "clicks": 0
-    },
-    {
-      "id": "q3-js-exemplo-a",
-      "title": "Exemplo Q3 JS A",
-      "url": "https://example.com/q3-js-a",
-      "description": "Aplicações dinâmicas e módulos em JS do 3º trimestre",
-      "categoryId": "3-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q3-js-exemplo-b",
-      "title": "Exemplo Q3 JS B",
-      "url": "https://example.com/q3-js-b",
-      "description": "Interatividade, persistência e manipulação de estado",
-      "categoryId": "3-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    }
-  ],
-  "theme": "dark",
-  "layoutStyle": "cards"
-};
-      const TRIMESTER_TOPICS = {
-  "1-trimestre": [
-    {
-      "id": "html",
-      "name": "HTML",
-      "shortName": "HTML",
-      "icon": "Code2",
-      "badgeClass": "bg-orange-500/15 border-orange-500/30 text-orange-400",
-      "colorHex": "#f97316"
-    },
-    {
-      "id": "js",
-      "name": "JavaScript (JS)",
-      "shortName": "JavaScript",
-      "icon": "Terminal",
-      "badgeClass": "bg-amber-500/15 border-amber-500/30 text-amber-400",
-      "colorHex": "#f59e0b"
-    }
-  ],
-  "2-trimestre": [
-    {
-      "id": "html",
-      "name": "HTML",
-      "shortName": "HTML",
-      "icon": "Code2",
-      "badgeClass": "bg-orange-500/15 border-orange-500/30 text-orange-400",
-      "colorHex": "#f97316"
-    },
-    {
-      "id": "js",
-      "name": "JavaScript (JS)",
-      "shortName": "JavaScript",
-      "icon": "Terminal",
-      "badgeClass": "bg-amber-500/15 border-amber-500/30 text-amber-400",
-      "colorHex": "#f59e0b"
-    },
-    {
-      "id": "google-ai",
-      "name": "Google AI",
-      "shortName": "Google AI",
-      "icon": "Sparkles",
-      "badgeClass": "bg-indigo-500/15 border-indigo-500/30 text-indigo-400",
-      "colorHex": "#6366f1"
-    }
-  ],
-  "3-trimestre": [
-    {
-      "id": "html",
-      "name": "HTML",
-      "shortName": "HTML",
-      "icon": "Code2",
-      "badgeClass": "bg-orange-500/15 border-orange-500/30 text-orange-400",
-      "colorHex": "#f97316"
-    },
-    {
-      "id": "js",
-      "name": "JavaScript (JS)",
-      "shortName": "JavaScript",
-      "icon": "Terminal",
-      "badgeClass": "bg-amber-500/15 border-amber-500/30 text-amber-400",
-      "colorHex": "#f59e0b"
-    },
-    {
-      "id": "google-ai",
-      "name": "Google AI",
-      "shortName": "Google AI",
-      "icon": "Sparkles",
-      "badgeClass": "bg-indigo-500/15 border-indigo-500/30 text-indigo-400",
-      "colorHex": "#6366f1"
-    }
-  ]
-};
+      const INITIAL_DATA = ${configJson};
+      const TRIMESTER_TOPICS = ${topicsJson};
 
       const STORAGE_KEY = 'portfolio_keth_standalone_v1';
 
@@ -734,19 +215,19 @@
         let html = '';
 
         // HEADER
-        html += `
+        html += \`
           <header class="sticky top-0 z-30 bg-[#0c0d12]/90 backdrop-blur-md border-b border-neutral-800/80 px-4 sm:px-8 py-3.5">
             <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
               
               <!-- Brand -->
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">
-                  ${escapeHtml(profile.name.charAt(0) || 'K')}
+                  \${escapeHtml(profile.name.charAt(0) || 'K')}
                 </div>
                 <div>
                   <div class="flex items-center gap-1.5">
-                    <span class="font-bold text-sm sm:text-base tracking-tight text-white">${escapeHtml(profile.name)}</span>
-                    <span title="Verificada">${ICONS.checkCircle}</span>
+                    <span class="font-bold text-sm sm:text-base tracking-tight text-white">\${escapeHtml(profile.name)}</span>
+                    <span title="Verificada">\${ICONS.checkCircle}</span>
                   </div>
                   <p class="text-[11px] text-neutral-400 font-medium hidden sm:block">Portfólio de Links • Colégio Unidade Polo</p>
                 </div>
@@ -756,20 +237,20 @@
               <div class="flex items-center gap-2.5 flex-1 max-w-md justify-end">
                 <div class="relative w-full max-w-xs">
                   <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    ${ICONS.search}
+                    \${ICONS.search}
                   </span>
                   <input 
                     id="search-input"
                     type="text"
-                    value="${escapeHtml(state.searchQuery)}"
+                    value="\${escapeHtml(state.searchQuery)}"
                     placeholder="Pesquisar projetos..."
                     class="w-full pl-9 pr-8 py-1.5 text-xs rounded-xl bg-neutral-900 border border-neutral-700/80 text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition"
                   />
-                  ${state.searchQuery ? `
+                  \${state.searchQuery ? \`
                     <button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-neutral-400 hover:text-white text-xs">
                       ✕
                     </button>
-                  ` : ''}
+                  \` : ''}
                 </div>
 
                 <!-- Botão Adicionar Site -->
@@ -778,7 +259,7 @@
                   class="shrink-0 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm"
                   title="Cadastrar novo projeto"
                 >
-                  ${ICONS.plus}
+                  \${ICONS.plus}
                   <span class="hidden sm:inline">Adicionar</span>
                 </button>
 
@@ -788,16 +269,16 @@
                   class="shrink-0 p-1.5 rounded-xl bg-neutral-800/80 hover:bg-neutral-700 border border-neutral-700/60 text-neutral-300 hover:text-white transition"
                   title="Configuração / Backup"
                 >
-                  ${ICONS.download}
+                  \${ICONS.download}
                 </button>
               </div>
 
             </div>
           </header>
-        `;
+        \`;
 
         // MAIN CONTENT
-        html += `
+        html += \`
           <main class="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-8 py-8 space-y-8">
 
             <!-- CARTÃO DE PERFIL -->
@@ -807,7 +288,7 @@
                 <!-- Avatar -->
                 <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 p-0.5 shadow-xl shadow-indigo-500/10 shrink-0">
                   <div class="w-full h-full rounded-2xl bg-neutral-900 flex items-center justify-center font-extrabold text-2xl sm:text-3xl text-indigo-400">
-                    ${escapeHtml(profile.name.charAt(0) || 'K')}
+                    \${escapeHtml(profile.name.charAt(0) || 'K')}
                   </div>
                   <div class="absolute -bottom-1 -right-1 p-1 rounded-full bg-neutral-900 border-2 border-neutral-800" title="Disponível">
                     <span class="relative flex h-3 w-3">
@@ -820,31 +301,31 @@
                 <!-- Bio & Dados -->
                 <div class="flex-1 min-w-0">
                   <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
-                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">${escapeHtml(profile.name)}</h1>
-                    <span class="text-indigo-400">${ICONS.checkCircle}</span>
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">\${escapeHtml(profile.name)}</h1>
+                    <span class="text-indigo-400">\${ICONS.checkCircle}</span>
                   </div>
 
                   <p class="text-sm sm:text-base font-semibold text-indigo-400 mb-2.5">
-                    ${escapeHtml(profile.role)}
+                    \${escapeHtml(profile.role)}
                   </p>
 
                   <p class="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-2xl mb-4">
-                    ${escapeHtml(profile.bio)}
+                    \${escapeHtml(profile.bio)}
                   </p>
 
                   <!-- Pills de Informação Rápida -->
                   <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                    ${profile.location ? `
+                    \${profile.location ? \`
                       <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-neutral-800/80 text-neutral-300 border border-neutral-700/60">
-                        ${ICONS.mapPin} ${escapeHtml(profile.location)}
+                        \${ICONS.mapPin} \${escapeHtml(profile.location)}
                       </span>
-                    ` : ''}
+                    \` : ''}
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                      ${escapeHtml(profile.statusText || 'Disponível')}
+                      \${escapeHtml(profile.statusText || 'Disponível')}
                     </span>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
-                      ${allLinks.length} Projetos Ativos
+                      \${allLinks.length} Projetos Ativos
                     </span>
                   </div>
                 </div>
@@ -859,60 +340,60 @@
                 <!-- Abas dos Trimestres -->
                 <div class="flex flex-wrap gap-2">
                   <button 
-                    class="filter-cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${state.activeCategory === 'all' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'}"
+                    class="filter-cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 \${state.activeCategory === 'all' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'}"
                     data-cat="all"
                   >
                     <span>Todos os Projetos</span>
-                    <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-black/30">${allLinks.length}</span>
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-black/30">\${allLinks.length}</span>
                   </button>
 
                   <button 
-                    class="filter-cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${state.activeCategory === '1-trimestre' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'}"
+                    class="filter-cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 \${state.activeCategory === '1-trimestre' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'}"
                     data-cat="1-trimestre"
                   >
                     <span>1º Trimestre</span>
-                    <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-black/30">${countQ1}</span>
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-black/30">\${countQ1}</span>
                   </button>
 
                   <button 
-                    class="filter-cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${state.activeCategory === '2-trimestre' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'}"
+                    class="filter-cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 \${state.activeCategory === '2-trimestre' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'}"
                     data-cat="2-trimestre"
                   >
                     <span>2º Trimestre</span>
-                    <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-black/30">${countQ2}</span>
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-black/30">\${countQ2}</span>
                   </button>
 
                   <button 
-                    class="filter-cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${state.activeCategory === '3-trimestre' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'}"
+                    class="filter-cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 \${state.activeCategory === '3-trimestre' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'}"
                     data-cat="3-trimestre"
                   >
                     <span>3º Trimestre</span>
-                    <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-black/30">${countQ3}</span>
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-black/30">\${countQ3}</span>
                   </button>
                 </div>
 
                 <!-- Filtro por Matéria -->
                 <div class="flex items-center gap-1.5 bg-neutral-900/80 p-1 rounded-xl border border-neutral-800 text-xs">
                   <button 
-                    class="filter-topic-btn px-2.5 py-1 rounded-lg font-medium transition ${state.activeTopic === 'all' ? 'bg-neutral-800 text-white font-bold' : 'text-neutral-400 hover:text-neutral-200'}"
+                    class="filter-topic-btn px-2.5 py-1 rounded-lg font-medium transition \${state.activeTopic === 'all' ? 'bg-neutral-800 text-white font-bold' : 'text-neutral-400 hover:text-neutral-200'}"
                     data-topic="all"
                   >
                     Todas
                   </button>
                   <button 
-                    class="filter-topic-btn px-2.5 py-1 rounded-lg font-medium transition ${state.activeTopic === 'html' ? 'bg-orange-500/20 text-orange-400 font-bold' : 'text-neutral-400 hover:text-neutral-200'}"
+                    class="filter-topic-btn px-2.5 py-1 rounded-lg font-medium transition \${state.activeTopic === 'html' ? 'bg-orange-500/20 text-orange-400 font-bold' : 'text-neutral-400 hover:text-neutral-200'}"
                     data-topic="html"
                   >
                     HTML
                   </button>
                   <button 
-                    class="filter-topic-btn px-2.5 py-1 rounded-lg font-medium transition ${state.activeTopic === 'js' ? 'bg-amber-500/20 text-amber-400 font-bold' : 'text-neutral-400 hover:text-neutral-200'}"
+                    class="filter-topic-btn px-2.5 py-1 rounded-lg font-medium transition \${state.activeTopic === 'js' ? 'bg-amber-500/20 text-amber-400 font-bold' : 'text-neutral-400 hover:text-neutral-200'}"
                     data-topic="js"
                   >
                     JS
                   </button>
                   <button 
-                    class="filter-topic-btn px-2.5 py-1 rounded-lg font-medium transition ${state.activeTopic === 'google-ai' ? 'bg-indigo-500/20 text-indigo-400 font-bold' : 'text-neutral-400 hover:text-neutral-200'}"
+                    class="filter-topic-btn px-2.5 py-1 rounded-lg font-medium transition \${state.activeTopic === 'google-ai' ? 'bg-indigo-500/20 text-indigo-400 font-bold' : 'text-neutral-400 hover:text-neutral-200'}"
                     data-topic="google-ai"
                   >
                     Google AI
@@ -924,18 +405,18 @@
               <!-- Indicador de resultados da pesquisa -->
               <div class="flex items-center justify-between text-xs text-neutral-400">
                 <div>
-                  Mostrando <strong class="text-white font-bold">${filteredLinks.length}</strong> de ${allLinks.length} projetos
-                  ${state.searchQuery ? `<span class="ml-1 text-indigo-400">(pesquisando por "${escapeHtml(state.searchQuery)}")</span>` : ''}
+                  Mostrando <strong class="text-white font-bold">\${filteredLinks.length}</strong> de \${allLinks.length} projetos
+                  \${state.searchQuery ? \`<span class="ml-1 text-indigo-400">(pesquisando por "\${escapeHtml(state.searchQuery)}")</span>\` : ''}
                 </div>
               </div>
             </section>
 
             <!-- GRID DE PROJETOS -->
             <section>
-              ${filteredLinks.length === 0 ? `
+              \${filteredLinks.length === 0 ? \`
                 <div class="text-center py-16 px-4 rounded-3xl bg-neutral-900/30 border border-neutral-800/60">
                   <div class="w-12 h-12 rounded-2xl bg-neutral-800 flex items-center justify-center mx-auto text-neutral-400 mb-3">
-                    ${ICONS.search}
+                    \${ICONS.search}
                   </div>
                   <h3 class="text-base font-bold text-white mb-1">Nenhum projeto encontrado</h3>
                   <p class="text-xs text-neutral-400 max-w-sm mx-auto mb-4">Tente buscar por outro termo ou mudar os filtros de trimestre e matéria.</p>
@@ -943,36 +424,36 @@
                     Limpar Filtros
                   </button>
                 </div>
-              ` : `
+              \` : \`
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  ${filteredLinks.map(link => `
+                  \${filteredLinks.map(link => \`
                     <div class="group relative rounded-2xl p-5 bg-neutral-900/60 hover:bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-all duration-200 flex flex-col justify-between gap-4 shadow-sm hover:shadow-xl hover:shadow-black/30">
                       
                       <!-- Topo do Card -->
                       <div>
                         <div class="flex items-center justify-between gap-2 mb-2.5">
-                          ${getTopicBadge(link.topic || 'html')}
+                          \${getTopicBadge(link.topic || 'html')}
                           <div class="flex items-center gap-1.5 text-[11px] text-neutral-500">
                             <span class="px-2 py-0.5 rounded bg-neutral-800/80 border border-neutral-700/50">
-                              ${getCategoryLabel(link.categoryId)}
+                              \${getCategoryLabel(link.categoryId)}
                             </span>
-                            ${link.clicks ? `
-                              <span class="text-neutral-500" title="${link.clicks} acessos">
-                                • ${link.clicks} ${link.clicks === 1 ? 'clique' : 'cliques'}
+                            \${link.clicks ? \`
+                              <span class="text-neutral-500" title="\${link.clicks} acessos">
+                                • \${link.clicks} \${link.clicks === 1 ? 'clique' : 'cliques'}
                               </span>
-                            ` : ''}
+                            \` : ''}
                           </div>
                         </div>
 
                         <h3 class="text-base font-bold text-white group-hover:text-indigo-300 transition-colors leading-snug mb-1.5">
-                          ${escapeHtml(link.title)}
+                          \${escapeHtml(link.title)}
                         </h3>
 
-                        ${link.description ? `
+                        \${link.description ? \`
                           <p class="text-xs text-neutral-400 leading-relaxed line-clamp-2">
-                            ${escapeHtml(link.description)}
+                            \${escapeHtml(link.description)}
                           </p>
-                        ` : ''}
+                        \` : ''}
                       </div>
 
                       <!-- Rodapé do Card com Ações -->
@@ -980,50 +461,50 @@
                         
                         <!-- Link Principal -->
                         <a 
-                          href="${escapeHtml(link.url)}" 
+                          href="\${escapeHtml(link.url)}" 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          data-link-id="${escapeHtml(link.id)}"
+                          data-link-id="\${escapeHtml(link.id)}"
                           class="project-link flex-1 min-w-0 px-3 py-2 rounded-xl bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-400 hover:text-indigo-300 border border-indigo-500/20 text-xs font-semibold flex items-center justify-between gap-2 transition"
                         >
                           <span class="truncate">Acessar Projeto</span>
-                          ${ICONS.external}
+                          \${ICONS.external}
                         </a>
 
                         <!-- Botão Copiar Link -->
                         <button 
                           class="copy-link-btn p-2 rounded-xl bg-neutral-800/80 hover:bg-neutral-700 text-neutral-400 hover:text-white transition"
-                          data-url="${escapeHtml(link.url)}"
+                          data-url="\${escapeHtml(link.url)}"
                           title="Copiar link"
                         >
-                          ${ICONS.copy}
+                          \${ICONS.copy}
                         </button>
 
                         <!-- Botão Excluir -->
                         <button 
                           class="delete-link-btn p-2 rounded-xl bg-neutral-800/80 hover:bg-red-500/20 text-neutral-500 hover:text-red-400 transition"
-                          data-link-id="${escapeHtml(link.id)}"
+                          data-link-id="\${escapeHtml(link.id)}"
                           title="Remover projeto"
                         >
-                          ${ICONS.trash}
+                          \${ICONS.trash}
                         </button>
 
                       </div>
 
                     </div>
-                  `).join('')}
+                  \`).join('')}
                 </div>
-              `}
+              \`}
             </section>
 
           </main>
-        `;
+        \`;
 
         // FOOTER
-        html += `
+        html += \`
           <footer class="border-t border-neutral-800/80 py-8 px-4 text-center text-xs text-neutral-500">
             <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p>© ${new Date().getFullYear()} ${escapeHtml(profile.name)} • Portfólio Escolar 100% Autônomo</p>
+              <p>© \${new Date().getFullYear()} \${escapeHtml(profile.name)} • Portfólio Escolar 100% Autônomo</p>
               <div class="flex items-center gap-4 text-neutral-400">
                 <span>HTML5</span>
                 <span>•</span>
@@ -1033,17 +514,17 @@
               </div>
             </div>
           </footer>
-        `;
+        \`;
 
         // MODAL: ADICIONAR SITE
         if (state.isAddModalOpen) {
-          html += `
+          html += \`
             <div id="add-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
               <div class="w-full max-w-md bg-neutral-900 border border-neutral-700/80 rounded-3xl p-6 shadow-2xl space-y-4">
                 
                 <div class="flex items-center justify-between pb-3 border-b border-neutral-800">
                   <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    ${ICONS.plus} Adicionar Projeto
+                    \${ICONS.plus} Adicionar Projeto
                   </h3>
                   <button id="close-add-modal-btn" class="text-neutral-400 hover:text-white text-sm">✕</button>
                 </div>
@@ -1095,18 +576,18 @@
 
               </div>
             </div>
-          `;
+          \`;
         }
 
         // MODAL: EXPORTAR / BACKUP
         if (state.isExportModalOpen) {
-          html += `
+          html += \`
             <div id="export-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
               <div class="w-full max-w-lg bg-neutral-900 border border-neutral-700/80 rounded-3xl p-6 shadow-2xl space-y-4">
                 
                 <div class="flex items-center justify-between pb-3 border-b border-neutral-800">
                   <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    ${ICONS.download} Backup & Código
+                    \${ICONS.download} Backup & Código
                   </h3>
                   <button id="close-export-modal-btn" class="text-neutral-400 hover:text-white text-sm">✕</button>
                 </div>
@@ -1120,7 +601,7 @@
                     readonly 
                     rows="8" 
                     class="w-full font-mono text-[11px] p-3 rounded-2xl bg-neutral-950 border border-neutral-800 text-neutral-300 focus:outline-none resize-none"
-                  >${escapeHtml(JSON.stringify(state.config, null, 2))}</textarea>
+                  >\${escapeHtml(JSON.stringify(state.config, null, 2))}</textarea>
                 </div>
 
                 <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-neutral-800">
@@ -1128,7 +609,7 @@
                     id="reset-default-data-btn" 
                     class="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-semibold flex items-center gap-1.5 transition"
                   >
-                    ${ICONS.refresh} Restaurar Padrão
+                    \${ICONS.refresh} Restaurar Padrão
                   </button>
 
                   <div class="flex gap-2">
@@ -1136,7 +617,7 @@
                       id="copy-json-btn"
                       class="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-semibold flex items-center gap-1.5 transition"
                     >
-                      ${ICONS.copy} Copiar JSON
+                      \${ICONS.copy} Copiar JSON
                     </button>
                     <button 
                       id="close-export-modal-btn-2" 
@@ -1149,7 +630,7 @@
 
               </div>
             </div>
-          `;
+          \`;
         }
 
         app.innerHTML = html;
@@ -1364,3 +845,8 @@
   </script>
 </body>
 </html>
+`;
+
+fs.writeFileSync('./index.html', standaloneHtml, 'utf-8');
+fs.writeFileSync('./public/standalone.html', standaloneHtml, 'utf-8');
+console.log('Successfully generated standalone index.html and public/standalone.html');
