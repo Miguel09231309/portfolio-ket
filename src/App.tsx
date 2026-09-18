@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Code2, 
+  Terminal,
   Sparkles, 
   Layers, 
   ExternalLink, 
@@ -14,8 +15,8 @@ import {
   Plus,
   FolderOpen
 } from 'lucide-react';
-import { PortfolioConfig, PortfolioLink, ThemeMode } from './types';
-import { INITIAL_PORTFOLIO_DATA } from './portfolioData';
+import { PortfolioConfig, PortfolioLink, ThemeMode, TrimesterTopic, PortfolioCategory } from './types';
+import { INITIAL_PORTFOLIO_DATA, TRIMESTER_TOPICS } from './portfolioData';
 import { THEMES } from './utils/themeStyles';
 import { Header } from './components/Header';
 import { ProfileCard } from './components/ProfileCard';
@@ -25,17 +26,33 @@ import { AddLinkInlineCard } from './components/AddLinkInlineCard';
 import { CodeSaverModal } from './components/CodeSaverModal';
 import { ShareModal } from './components/ShareModal';
 
-const STORAGE_KEY = 'portfolio_custom_config_v8';
+const STORAGE_KEY = 'portfolio_custom_config_v13';
+
+function getLinkTopic(link: PortfolioLink, categoryId: string): TrimesterTopic {
+  if (link.topic) return link.topic;
+  const text = `${link.title} ${link.description || ''} ${(link.tags || []).join(' ')} ${link.badge || ''}`.toLowerCase();
+  if (categoryId !== '1-trimestre' && (text.includes('ai') || text.includes('ia') || text.includes('gemini') || text.includes('google') || text.includes('inteligencia') || text.includes('inteligência'))) {
+    return 'google-ai';
+  }
+  if (text.includes('js') || text.includes('javascript') || text.includes('script') || text.includes('node') || text.includes('react') || text.includes('vue') || text.includes('ts')) {
+    return 'js';
+  }
+  return 'html';
+}
 
 export default function App() {
-  // Initialize configuration from local cache or directly from src/portfolioData.ts
+  // Initialize configuration directly from src/portfolioData.ts or local cache
   const [config, setConfig] = useState<PortfolioConfig>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.profile && Array.isArray(parsed.links) && Array.isArray(parsed.categories)) {
-          // Filter out 4-trimestre if previously cached
+        if (
+          parsed.profile && 
+          Array.isArray(parsed.links) && 
+          Array.isArray(parsed.categories) && 
+          parsed.links.length >= INITIAL_PORTFOLIO_DATA.links.length
+        ) {
           parsed.categories = parsed.categories.filter((c: any) => c.id !== '4-trimestre');
           parsed.links = parsed.links.filter((l: any) => l.categoryId !== '4-trimestre');
           return parsed;
@@ -49,6 +66,7 @@ export default function App() {
 
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('1-trimestre');
+  const [selectedTopicId, setSelectedTopicId] = useState<TrimesterTopic>('html');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isCodeModalOpen, setIsCodeModalOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -84,9 +102,10 @@ export default function App() {
     });
   };
 
-  // Select trimester and scroll to add form
-  const handleAddInTrimester = (catId: string) => {
+  // Select trimester and topic and scroll to add form
+  const handleAddInTopic = (catId: string, topicId: TrimesterTopic) => {
     setSelectedCategoryId(catId);
+    setSelectedTopicId(topicId);
     const el = document.getElementById('add-new-site-section');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -207,7 +226,9 @@ export default function App() {
             onAddLink={handleAddLink}
             currentTheme={currentTheme}
             selectedCategoryId={selectedCategoryId}
+            selectedTopicId={selectedTopicId}
             onSelectCategoryId={setSelectedCategoryId}
+            onSelectTopicId={setSelectedTopicId}
           />
         </div>
 
@@ -241,33 +262,73 @@ export default function App() {
                 Limpar busca
               </button>
             </div>
+          ) : searchQuery ? (
+            /* Search results list */
+            <div
+              className={
+                layoutStyle === 'cards'
+                  ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
+                  : 'flex flex-col gap-2.5'
+              }
+            >
+              {filteredLinks.map((link) => {
+                const cat = config.categories.find((c) => c.id === link.categoryId);
+                return (
+                  <LinkCard
+                    key={link.id}
+                    link={link}
+                    categoryName={cat?.name}
+                    currentTheme={currentTheme}
+                    layoutStyle={layoutStyle}
+                    onTrackClick={handleTrackClick}
+                    onDeleteLink={handleDeleteLink}
+                  />
+                );
+              })}
+            </div>
           ) : shouldGroupByCategory ? (
-            /* Grouped by Trimester view (shows all 4 trimesters) */
+            /* Grouped by Trimester view (1º, 2º, 3º) with sub-topics */
             config.categories.map((category) => {
-              const categoryLinks = config.links.filter(
-                (l) => l.categoryId === category.id
-              );
+              const categoryLinks = config.links.filter((l) => l.categoryId === category.id);
+              const topics = TRIMESTER_TOPICS[category.id] || TRIMESTER_TOPICS['1-trimestre'];
 
               return (
-                <section key={category.id} className="space-y-3.5">
-                  <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 ring-4 ring-indigo-500/20"></div>
-                      <h2 className="text-sm sm:text-base font-bold text-neutral-200">
-                        {category.name}
-                      </h2>
-                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
-                        categoryLinks.length > 0
-                          ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
-                          : 'bg-neutral-800/60 border-neutral-700 text-neutral-400'
-                      }`}>
-                        {categoryLinks.length} {categoryLinks.length === 1 ? 'site' : 'sites'}
-                      </span>
+                <section 
+                  key={category.id} 
+                  className={`space-y-5 p-5 sm:p-6 rounded-3xl border transition-all ${
+                    currentTheme === 'light' 
+                      ? 'bg-white/90 border-slate-200 shadow-sm' 
+                      : 'bg-neutral-900/40 border-neutral-800/80 shadow-md'
+                  }`}
+                >
+                  {/* Category Main Header */}
+                  <div className="flex items-center justify-between pb-3 border-b border-neutral-800/50">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-indigo-500/20 shrink-0" />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h2 className={`text-base sm:text-lg font-bold ${currentTheme === 'light' ? 'text-slate-900' : 'text-neutral-100'}`}>
+                            {category.name}
+                          </h2>
+                          <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
+                            categoryLinks.length > 0
+                              ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
+                              : 'bg-neutral-800/60 border-neutral-700 text-neutral-400'
+                          }`}>
+                            {categoryLinks.length} {categoryLinks.length === 1 ? 'site' : 'sites'}
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${currentTheme === 'light' ? 'text-slate-500' : 'text-neutral-400'}`}>
+                          {category.id === '1-trimestre' 
+                            ? 'Módulos: HTML e JavaScript (JS)' 
+                            : 'Módulos: HTML, JavaScript (JS) e Google AI'}
+                        </p>
+                      </div>
                     </div>
 
                     <button
                       type="button"
-                      onClick={() => handleAddInTrimester(category.id)}
+                      onClick={() => handleAddInTopic(category.id, 'html')}
                       className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors cursor-pointer"
                       title={`Adicionar site no ${category.name}`}
                     >
@@ -277,96 +338,234 @@ export default function App() {
                     </button>
                   </div>
 
-                  {categoryLinks.length > 0 ? (
-                    <div
-                      className={
-                        layoutStyle === 'cards'
-                          ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
-                          : 'flex flex-col gap-2.5'
-                      }
-                    >
-                      {categoryLinks.map((link) => (
-                        <LinkCard
-                          key={link.id}
-                          link={link}
-                          categoryName={category.name}
-                          currentTheme={currentTheme}
-                          layoutStyle={layoutStyle}
-                          onTrackClick={handleTrackClick}
-                          onDeleteLink={handleDeleteLink}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="py-7 px-4 rounded-2xl border border-dashed border-neutral-800/90 bg-neutral-900/30 text-center flex flex-col items-center justify-center gap-2">
-                      <p className="text-xs text-neutral-400">
-                        Nenhum site adicionado no <strong className="text-neutral-300">{category.name}</strong> ainda.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => handleAddInTrimester(category.id)}
-                        className="px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 text-indigo-300 text-xs font-semibold inline-flex items-center gap-1.5 transition-all cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Adicionar site no {category.name}</span>
-                      </button>
-                    </div>
-                  )}
+                  {/* Topics Subsections */}
+                  <div className="space-y-6 pt-1">
+                    {topics.map((topic) => {
+                      const topicLinks = categoryLinks.filter(
+                        (l) => getLinkTopic(l, category.id) === topic.id
+                      );
+
+                      return (
+                        <div key={topic.id} className="space-y-3">
+                          {/* Topic Subheader */}
+                          <div className="flex items-center justify-between px-1">
+                            <div className="flex items-center gap-2">
+                              <div className={`p-1.5 rounded-lg border flex items-center justify-center ${topic.badgeClass}`}>
+                                {topic.id === 'html' && <Code2 className="w-4 h-4 text-orange-400" />}
+                                {topic.id === 'js' && <Terminal className="w-4 h-4 text-amber-400" />}
+                                {topic.id === 'google-ai' && <Sparkles className="w-4 h-4 text-indigo-400" />}
+                              </div>
+                              <h3 className={`text-sm font-bold ${currentTheme === 'light' ? 'text-slate-800' : 'text-neutral-200'}`}>
+                                {topic.name}
+                              </h3>
+                              <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
+                                topicLinks.length > 0 
+                                  ? 'bg-neutral-800 border-neutral-700 text-neutral-300' 
+                                  : 'bg-neutral-850 border-neutral-800 text-neutral-500'
+                              }`}>
+                                {topicLinks.length}
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => handleAddInTopic(category.id, topic.id)}
+                              className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors cursor-pointer"
+                              title={`Adicionar site em ${topic.name}`}
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                              <span>Adicionar em {topic.shortName}</span>
+                            </button>
+                          </div>
+
+                          {/* Topic Links */}
+                          {topicLinks.length > 0 ? (
+                            <div
+                              className={
+                                layoutStyle === 'cards'
+                                  ? 'grid grid-cols-1 sm:grid-cols-2 gap-3.5'
+                                  : 'flex flex-col gap-2'
+                              }
+                            >
+                              {topicLinks.map((link) => (
+                                <LinkCard
+                                  key={link.id}
+                                  link={link}
+                                  categoryName={category.name}
+                                  currentTheme={currentTheme}
+                                  layoutStyle={layoutStyle}
+                                  onTrackClick={handleTrackClick}
+                                  onDeleteLink={handleDeleteLink}
+                                />
+                              ))}
+                            </div>
+                          ) : (
+                            <div className={`py-3 px-3.5 rounded-2xl border border-dashed text-center flex items-center justify-between gap-3 ${
+                              currentTheme === 'light'
+                                ? 'border-slate-300/80 bg-slate-50/60'
+                                : 'border-neutral-800/80 bg-neutral-950/25'
+                            }`}>
+                              <span className={`text-xs ${currentTheme === 'light' ? 'text-slate-500' : 'text-neutral-400'}`}>
+                                Nenhum site em <strong className={currentTheme === 'light' ? 'text-slate-700' : 'text-neutral-300'}>{topic.name}</strong> adicionado ainda.
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleAddInTopic(category.id, topic.id)}
+                                className="px-2.5 py-1 rounded-lg bg-indigo-600/15 hover:bg-indigo-600/25 border border-indigo-500/20 text-indigo-300 text-xs font-medium inline-flex items-center gap-1 transition-all cursor-pointer shrink-0"
+                              >
+                                <Plus className="w-3 h-3" />
+                                <span>Adicionar</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </section>
               );
             })
           ) : (
             /* Filtered single trimester view */
-            filteredLinks.length === 0 ? (
-              <div className="text-center py-12 px-4 rounded-3xl border border-neutral-800 bg-neutral-900/40">
-                <FolderOpen className="w-10 h-10 mx-auto text-neutral-500 mb-3 opacity-60" />
-                <h3 className="text-base font-bold text-neutral-300 mb-1">
-                  Nenhum site cadastrado neste trimestre
-                </h3>
-                <p className="text-xs text-neutral-400 max-w-md mx-auto mb-4">
-                  Você ainda não possui sites neste trimestre selecionado.
-                </p>
-                <div className="flex items-center justify-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleAddInTrimester(activeCategory)}
-                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-md transition-all cursor-pointer"
-                  >
-                    Adicionar site agora
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveCategory('all')}
-                    className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all cursor-pointer"
-                  >
-                    Ver todos os trimestres
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div
-                className={
-                  layoutStyle === 'cards'
-                    ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
-                    : 'flex flex-col gap-2.5'
-                }
-              >
-                {filteredLinks.map((link) => {
-                  const cat = config.categories.find((c) => c.id === link.categoryId);
-                  return (
-                    <LinkCard
-                      key={link.id}
-                      link={link}
-                      categoryName={cat?.name}
-                      currentTheme={currentTheme}
-                      layoutStyle={layoutStyle}
-                      onTrackClick={handleTrackClick}
-                      onDeleteLink={handleDeleteLink}
-                    />
-                  );
-                })}
-              </div>
-            )
+            (() => {
+              const selectedCat = config.categories.find((c) => c.id === activeCategory);
+              if (!selectedCat) return null;
+              const categoryLinks = config.links.filter((l) => l.categoryId === selectedCat.id);
+              const topics = TRIMESTER_TOPICS[selectedCat.id] || TRIMESTER_TOPICS['1-trimestre'];
+
+              return (
+                <section 
+                  key={selectedCat.id} 
+                  className={`space-y-5 p-5 sm:p-6 rounded-3xl border transition-all ${
+                    currentTheme === 'light' 
+                      ? 'bg-white/90 border-slate-200 shadow-sm' 
+                      : 'bg-neutral-900/40 border-neutral-800/80 shadow-md'
+                  }`}
+                >
+                  {/* Category Main Header */}
+                  <div className="flex items-center justify-between pb-3 border-b border-neutral-800/50">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-indigo-500/20 shrink-0" />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h2 className={`text-base sm:text-lg font-bold ${currentTheme === 'light' ? 'text-slate-900' : 'text-neutral-100'}`}>
+                            {selectedCat.name}
+                          </h2>
+                          <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
+                            categoryLinks.length > 0
+                              ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
+                              : 'bg-neutral-800/60 border-neutral-700 text-neutral-400'
+                          }`}>
+                            {categoryLinks.length} {categoryLinks.length === 1 ? 'site' : 'sites'}
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 ${currentTheme === 'light' ? 'text-slate-500' : 'text-neutral-400'}`}>
+                          {selectedCat.id === '1-trimestre' 
+                            ? 'Módulos: HTML e JavaScript (JS)' 
+                            : 'Módulos: HTML, JavaScript (JS) e Google AI'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAddInTopic(selectedCat.id, 'html')}
+                      className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors cursor-pointer"
+                      title={`Adicionar site no ${selectedCat.name}`}
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Adicionar no {selectedCat.name}</span>
+                      <span className="sm:hidden">Adicionar</span>
+                    </button>
+                  </div>
+
+                  {/* Topics Subsections */}
+                  <div className="space-y-6 pt-1">
+                    {topics.map((topic) => {
+                      const topicLinks = categoryLinks.filter(
+                        (l) => getLinkTopic(l, selectedCat.id) === topic.id
+                      );
+
+                      return (
+                        <div key={topic.id} className="space-y-3">
+                          {/* Topic Subheader */}
+                          <div className="flex items-center justify-between px-1">
+                            <div className="flex items-center gap-2">
+                              <div className={`p-1.5 rounded-lg border flex items-center justify-center ${topic.badgeClass}`}>
+                                {topic.id === 'html' && <Code2 className="w-4 h-4 text-orange-400" />}
+                                {topic.id === 'js' && <Terminal className="w-4 h-4 text-amber-400" />}
+                                {topic.id === 'google-ai' && <Sparkles className="w-4 h-4 text-indigo-400" />}
+                              </div>
+                              <h3 className={`text-sm font-bold ${currentTheme === 'light' ? 'text-slate-800' : 'text-neutral-200'}`}>
+                                {topic.name}
+                              </h3>
+                              <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
+                                topicLinks.length > 0 
+                                  ? 'bg-neutral-800 border-neutral-700 text-neutral-300' 
+                                  : 'bg-neutral-850 border-neutral-800 text-neutral-500'
+                              }`}>
+                                {topicLinks.length}
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => handleAddInTopic(selectedCat.id, topic.id)}
+                              className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors cursor-pointer"
+                              title={`Adicionar site em ${topic.name}`}
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                              <span>Adicionar em {topic.shortName}</span>
+                            </button>
+                          </div>
+
+                          {/* Topic Links */}
+                          {topicLinks.length > 0 ? (
+                            <div
+                              className={
+                                layoutStyle === 'cards'
+                                  ? 'grid grid-cols-1 sm:grid-cols-2 gap-3.5'
+                                  : 'flex flex-col gap-2'
+                              }
+                            >
+                              {topicLinks.map((link) => (
+                                <LinkCard
+                                  key={link.id}
+                                  link={link}
+                                  categoryName={selectedCat.name}
+                                  currentTheme={currentTheme}
+                                  layoutStyle={layoutStyle}
+                                  onTrackClick={handleTrackClick}
+                                  onDeleteLink={handleDeleteLink}
+                                />
+                              ))}
+                            </div>
+                          ) : (
+                            <div className={`py-3 px-3.5 rounded-2xl border border-dashed text-center flex items-center justify-between gap-3 ${
+                              currentTheme === 'light'
+                                ? 'border-slate-300/80 bg-slate-50/60'
+                                : 'border-neutral-800/80 bg-neutral-950/25'
+                            }`}>
+                              <span className={`text-xs ${currentTheme === 'light' ? 'text-slate-500' : 'text-neutral-400'}`}>
+                                Nenhum site em <strong className={currentTheme === 'light' ? 'text-slate-700' : 'text-neutral-300'}>{topic.name}</strong> adicionado ainda.
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleAddInTopic(selectedCat.id, topic.id)}
+                                className="px-2.5 py-1 rounded-lg bg-indigo-600/15 hover:bg-indigo-600/25 border border-indigo-500/20 text-indigo-300 text-xs font-medium inline-flex items-center gap-1 transition-all cursor-pointer shrink-0"
+                              >
+                                <Plus className="w-3 h-3" />
+                                <span>Adicionar</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })()
           )}
         </div>
 

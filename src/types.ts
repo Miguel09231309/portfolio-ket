@@ -15,12 +15,15 @@ export interface PortfolioCategory {
   icon?: string;
 }
 
+export type TrimesterTopic = 'html' | 'js' | 'google-ai';
+
 export interface PortfolioLink {
   id: string;
   title: string;
   url: string;
   description?: string;
   categoryId: string;
+  topic?: TrimesterTopic;
   icon?: string;
   featured?: boolean;
   badge?: string;

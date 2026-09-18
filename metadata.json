@@ -1,6 +1,6 @@
 {
   "name": "Portfólio de Links",
-  "description": "Portfólio profissional para reunir links, redes e projetos, facilmente editável e salvo direto no código.",
+  "description": "Portfólio de projetos escolares e desenvolvimento web de Keth organizado por trimestres (1º, 2º e 3º) e matérias (HTML, JavaScript e Google AI).",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

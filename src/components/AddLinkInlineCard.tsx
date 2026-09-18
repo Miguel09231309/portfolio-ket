@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
   Globe, 
@@ -17,26 +17,29 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import { PortfolioLink, PortfolioCategory, ThemeMode } from '../types';
+import { PortfolioLink, PortfolioCategory, ThemeMode, TrimesterTopic } from '../types';
 import { THEMES } from '../utils/themeStyles';
 import { renderIcon } from '../utils/iconMap';
+import { TRIMESTER_TOPICS } from '../portfolioData';
 
 interface AddLinkInlineCardProps {
   categories: PortfolioCategory[];
   onAddLink: (link: PortfolioLink) => void;
   currentTheme: ThemeMode;
   selectedCategoryId?: string;
+  selectedTopicId?: TrimesterTopic;
   onSelectCategoryId?: (id: string) => void;
+  onSelectTopicId?: (topic: TrimesterTopic) => void;
 }
 
 const QUICK_ICONS = [
   { id: 'Globe', label: 'Site / Web' },
   { id: 'Code2', label: 'Sistema / Dev' },
   { id: 'Terminal', label: 'App / Terminal' },
+  { id: 'Sparkles', label: 'Google AI' },
   { id: 'BarChart3', label: 'Dashboard' },
   { id: 'Layers', label: 'Design' },
   { id: 'Github', label: 'GitHub' },
-  { id: 'Send', label: 'Contato' },
   { id: 'Link', label: 'Outro' },
 ];
 
@@ -45,13 +48,18 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
   onAddLink,
   currentTheme,
   selectedCategoryId,
+  selectedTopicId,
   onSelectCategoryId,
+  onSelectTopicId,
 }) => {
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState(
     selectedCategoryId || categories[0]?.id || '1-trimestre'
+  );
+  const [selectedTopic, setSelectedTopic] = useState<TrimesterTopic>(
+    selectedTopicId || 'html'
   );
   const [selectedIcon, setSelectedIcon] = useState('Globe');
   const [badge, setBadge] = useState('');
@@ -60,18 +68,59 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
   const [addedSuccess, setAddedSuccess] = useState(false);
 
   // Sync category if external prop changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedCategoryId) {
       setCategoryId(selectedCategoryId);
     }
   }, [selectedCategoryId]);
 
+  // Sync topic if external prop changes
+  useEffect(() => {
+    if (selectedTopicId) {
+      setSelectedTopic(selectedTopicId);
+    }
+  }, [selectedTopicId]);
+
+  // Ensure topic is valid for the selected trimester
+  useEffect(() => {
+    const validTopics = TRIMESTER_TOPICS[categoryId] || TRIMESTER_TOPICS['1-trimestre'];
+    const isValid = validTopics.some((t) => t.id === selectedTopic);
+    if (!isValid) {
+      const fallback = validTopics[0]?.id || 'html';
+      setSelectedTopic(fallback);
+      if (onSelectTopicId) onSelectTopicId(fallback);
+    }
+  }, [categoryId, selectedTopic, onSelectTopicId]);
+
   const theme = THEMES[currentTheme];
+  const availableTopics = TRIMESTER_TOPICS[categoryId] || TRIMESTER_TOPICS['1-trimestre'];
 
   const handleCategoryChange = (newCatId: string) => {
     setCategoryId(newCatId);
     if (onSelectCategoryId) {
       onSelectCategoryId(newCatId);
+    }
+    // Check if current topic exists in new category
+    const validTopics = TRIMESTER_TOPICS[newCatId] || TRIMESTER_TOPICS['1-trimestre'];
+    if (!validTopics.some((t) => t.id === selectedTopic)) {
+      const fallback = validTopics[0]?.id || 'html';
+      setSelectedTopic(fallback);
+      if (onSelectTopicId) onSelectTopicId(fallback);
+    }
+  };
+
+  const handleTopicChange = (newTopic: TrimesterTopic) => {
+    setSelectedTopic(newTopic);
+    if (onSelectTopicId) {
+      onSelectTopicId(newTopic);
+    }
+    // Automatically match icon if relevant
+    if (newTopic === 'google-ai' && selectedIcon === 'Globe') {
+      setSelectedIcon('Sparkles');
+    } else if (newTopic === 'js' && selectedIcon === 'Globe') {
+      setSelectedIcon('Terminal');
+    } else if (newTopic === 'html' && selectedIcon === 'Sparkles') {
+      setSelectedIcon('Code2');
     }
   };
 
@@ -93,7 +142,8 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
       title: title.trim(),
       url: cleanUrl,
       description: description.trim() || undefined,
-      categoryId: categoryId || categories[0]?.id || 'sites',
+      categoryId: categoryId || categories[0]?.id || '1-trimestre',
+      topic: selectedTopic,
       icon: selectedIcon,
       badge: badge.trim() || undefined,
       tags: tags.length > 0 ? tags : undefined,
@@ -131,7 +181,7 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
               </span>
             </h2>
             <p className={`text-xs ${currentTheme === 'light' ? 'text-slate-500' : 'text-neutral-400'}`}>
-              Insira o nome e o link do seu site para publicar no portfólio
+              Insira o nome e o link do seu site para publicar no trimestre e matéria correspondente
             </p>
           </div>
         </div>
@@ -144,11 +194,11 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3.5">
-        {/* Trimester Selector */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Step 1: Trimester Selector */}
         <div>
-          <label className={`block text-xs font-semibold mb-1.5 flex items-center gap-1.5 ${currentTheme === 'light' ? 'text-slate-800' : 'text-neutral-200'}`}>
-            <span>Selecione o Trimestre do Site:</span>
+          <label className={`block text-xs font-semibold mb-1.5 flex items-center justify-between ${currentTheme === 'light' ? 'text-slate-800' : 'text-neutral-200'}`}>
+            <span>1. Selecione o Trimestre:</span>
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {categories.map((cat) => {
@@ -174,6 +224,40 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
           </div>
         </div>
 
+        {/* Step 2: Topic / Subject Selector (HTML, JS, Google AI) */}
+        <div>
+          <label className={`block text-xs font-semibold mb-1.5 flex items-center justify-between ${currentTheme === 'light' ? 'text-slate-800' : 'text-neutral-200'}`}>
+            <span>2. Selecione a Matéria / Tecnologia:</span>
+            <span className="text-[10px] font-normal text-neutral-400">
+              {categoryId === '1-trimestre' ? '1º Trimestre: HTML e JS' : '2º e 3º Trimestre: HTML, JS e Google AI'}
+            </span>
+          </label>
+          <div className={`grid gap-2 ${availableTopics.length === 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}`}>
+            {availableTopics.map((topic) => {
+              const isSelected = selectedTopic === topic.id;
+              return (
+                <button
+                  key={topic.id}
+                  type="button"
+                  onClick={() => handleTopicChange(topic.id)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                    isSelected
+                      ? `${topic.badgeClass} ring-2 ring-indigo-500/40 font-bold scale-[1.02] shadow-sm`
+                      : currentTheme === 'light'
+                        ? 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'
+                        : 'bg-neutral-950 border-neutral-800 text-neutral-400 hover:bg-neutral-850 hover:text-neutral-200'
+                  }`}
+                >
+                  {topic.id === 'html' && <Code2 className="w-4 h-4 text-orange-500 shrink-0" />}
+                  {topic.id === 'js' && <Terminal className="w-4 h-4 text-amber-500 shrink-0" />}
+                  {topic.id === 'google-ai' && <Sparkles className="w-4 h-4 text-indigo-400 shrink-0" />}
+                  <span>{topic.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Row 1: Title & URL */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
@@ -185,7 +269,7 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ex: Sistema de Gestão, Portfólio, Meu Blog..."
+              placeholder="Ex: Landing Page, Calculadora JS, Chat com IA..."
               className={`w-full px-3.5 py-2.5 rounded-xl text-sm transition-all outline-none border ${
                 currentTheme === 'light'
                   ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white'
@@ -225,7 +309,7 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Ex: Sistema web responsivo construído para clientes e empresas..."
+            placeholder="Ex: Exercício prático em JavaScript com manipulação do DOM..."
             className={`w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm transition-all outline-none border ${
               currentTheme === 'light'
                 ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white'
@@ -237,7 +321,7 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
         {/* Quick Icon Selector */}
         <div>
           <label className={`block text-xs font-medium mb-1.5 ${currentTheme === 'light' ? 'text-slate-700' : 'text-neutral-300'}`}>
-            Escolha um Ícone Representativo:
+            Escolha um Ícone:
           </label>
           <div className="flex flex-wrap items-center gap-1.5">
             {QUICK_ICONS.map((icon) => {
@@ -285,7 +369,7 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
                   type="text"
                   value={badge}
                   onChange={(e) => setBadge(e.target.value)}
-                  placeholder="Ex: Novo, Online, Destaque"
+                  placeholder="Ex: Trabalho 1, Projeto Final, Prática"
                   className={`w-full px-3 py-2 rounded-xl text-xs border outline-none ${
                     currentTheme === 'light'
                       ? 'bg-slate-50 border-slate-200 text-slate-800'
@@ -303,7 +387,7 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
                   type="text"
                   value={tagsText}
                   onChange={(e) => setTagsText(e.target.value)}
-                  placeholder="React, Next, Node, Landing..."
+                  placeholder="HTML5, CSS3, DOM, Gemini..."
                   className={`w-full px-3 py-2 rounded-xl text-xs border outline-none ${
                     currentTheme === 'light'
                       ? 'bg-slate-50 border-slate-200 text-slate-800'
@@ -318,7 +402,7 @@ export const AddLinkInlineCard: React.FC<AddLinkInlineCardProps> = ({
         {/* Submit Button Bar */}
         <div className="pt-2 flex items-center justify-between">
           <span className={`text-[11px] ${currentTheme === 'light' ? 'text-slate-500' : 'text-neutral-500'}`}>
-            Dica: O site aparece instantaneamente e fica pronto para salvar no código.
+            Destino: <strong>{categories.find(c => c.id === categoryId)?.name || categoryId}</strong> &rarr; <strong>{availableTopics.find(t => t.id === selectedTopic)?.name || selectedTopic}</strong>
           </span>
 
           <button

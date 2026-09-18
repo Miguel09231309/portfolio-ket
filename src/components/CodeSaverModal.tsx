@@ -20,7 +20,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import { PortfolioConfig, PortfolioLink, PortfolioCategory, ThemeMode } from '../types';
-import { generateTypeScriptCode, downloadFile, copyToClipboard } from '../utils/codeExport';
+import { generateTypeScriptCode, generateStandaloneHtml, downloadFile, copyToClipboard } from '../utils/codeExport';
 import { AVAILABLE_ICONS, renderIcon } from '../utils/iconMap';
 import { INITIAL_PORTFOLIO_DATA } from '../portfolioData';
 
@@ -83,6 +83,12 @@ export const CodeSaverModal: React.FC<CodeSaverModalProps> = ({
   const handleDownloadCode = () => {
     downloadFile(generatedCode, 'portfolioData.ts');
     showNotification('Arquivo portfolioData.ts baixado com sucesso!');
+  };
+
+  const handleDownloadStandaloneHtml = () => {
+    const htmlCode = generateStandaloneHtml(config);
+    downloadFile(htmlCode, 'index.html');
+    showNotification('Arquivo index.html autônomo baixado com sucesso!');
   };
 
   const handleCreateLink = (e: React.FormEvent) => {
@@ -315,6 +321,15 @@ export const CodeSaverModal: React.FC<CodeSaverModalProps> = ({
                   >
                     <Download className="w-4 h-4 text-indigo-400" />
                     <span>Baixar portfolioData.ts</span>
+                  </button>
+
+                  <button
+                    id="download-html-file-btn"
+                    onClick={handleDownloadStandaloneHtml}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-200 border border-indigo-700/60 font-medium text-xs transition-all active:scale-95"
+                  >
+                    <FileCode2 className="w-4 h-4 text-indigo-300" />
+                    <span>Baixar index.html (Autônomo)</span>
                   </button>
                 </div>
 

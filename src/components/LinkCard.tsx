@@ -57,6 +57,35 @@ export const LinkCard: React.FC<LinkCardProps> = ({
     domain = link.url;
   }
 
+  const renderTopicBadge = () => {
+    if (!link.topic) return null;
+    if (link.topic === 'html') {
+      return (
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 inline-flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+          <span>HTML</span>
+        </span>
+      );
+    }
+    if (link.topic === 'js') {
+      return (
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 inline-flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+          <span>JS</span>
+        </span>
+      );
+    }
+    if (link.topic === 'google-ai') {
+      return (
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 inline-flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+          <span>Google AI</span>
+        </span>
+      );
+    }
+    return null;
+  };
+
   if (layoutStyle === 'compact') {
     return (
       <a
@@ -76,10 +105,11 @@ export const LinkCard: React.FC<LinkCardProps> = ({
             {renderIcon(link.icon, 'w-5 h-5')}
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-sm font-semibold truncate group-hover:text-indigo-400 transition-colors">
                 {link.title}
               </h3>
+              {renderTopicBadge()}
               {link.badge && (
                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border whitespace-nowrap shrink-0 ${theme.accentBadge}`}>
                   {link.badge}
@@ -165,11 +195,14 @@ export const LinkCard: React.FC<LinkCardProps> = ({
                 </div>
               )}
               <div>
-                {!link.image && link.badge && (
-                  <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border mb-1 ${theme.accentBadge}`}>
-                    {link.badge}
-                  </span>
-                )}
+                <div className="flex items-center gap-1.5 flex-wrap mb-1">
+                  {renderTopicBadge()}
+                  {!link.image && link.badge && (
+                    <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border ${theme.accentBadge}`}>
+                      {link.badge}
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs text-neutral-400 font-mono block">
                   {domain}
                 </span>
