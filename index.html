@@ -480,6 +480,17 @@
       "clicks": 0
     },
     {
+      "id": "q3-html-questionario",
+      "title": "Questionário",
+      "url": "https://miguel09231309.github.io/questionario/index.html",
+      "description": "Questionário interativo e formulários desenvolvido em HTML",
+      "categoryId": "3-trimestre",
+      "topic": "html",
+      "badge": "HTML",
+      "icon": "Code2",
+      "clicks": 0
+    },
+    {
       "id": "q3-html-exemplo-a",
       "title": "Exemplo Q3 HTML A",
       "url": "https://example.com/q3-html-a",
@@ -600,7 +611,7 @@
   ]
 };
 
-      const STORAGE_KEY = 'portfolio_keth_standalone_v1';
+      const STORAGE_KEY = 'portfolio_keth_standalone_v2';
 
       // Estado do aplicativo
       let state = {
@@ -1344,7 +1355,7 @@
         const resetDefaultBtn = document.getElementById('reset-default-data-btn');
         if (resetDefaultBtn) {
           resetDefaultBtn.addEventListener('click', () => {
-            if (confirm('Restaurar todos os 38 projetos originais de Keth?')) {
+            if (confirm('Restaurar todos os projetos originais de Keth?')) {
               state.isExportModalOpen = false;
               saveConfig(INITIAL_DATA);
               showToast('Dados restaurados para o padrão original!');

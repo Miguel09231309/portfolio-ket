@@ -522,6 +522,17 @@ export const INITIAL_PORTFOLIO_DATA: PortfolioConfig = {
      * 3º TRIMESTRE — HTML
      * ======================================================================== */
     {
+      id: "q3-html-questionario",
+      title: "Questionário",
+      url: "https://miguel09231309.github.io/questionario/index.html",
+      description: "Questionário interativo e formulários desenvolvido em HTML",
+      categoryId: "3-trimestre",
+      topic: "html",
+      badge: "HTML",
+      icon: "Code2",
+      clicks: 0
+    },
+    {
       id: "q3-html-exemplo-a",
       title: "Exemplo Q3 HTML A",
       url: "https://example.com/q3-html-a",
