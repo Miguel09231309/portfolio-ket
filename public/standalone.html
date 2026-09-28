@@ -381,50 +381,6 @@
       "clicks": 0
     },
     {
-      "id": "q2-html-exemplo-c",
-      "title": "Exemplo HTML C",
-      "url": "https://example.com/q2-html-c",
-      "description": "Projeto estrutural e semântico em HTML",
-      "categoryId": "2-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Code2",
-      "clicks": 0
-    },
-    {
-      "id": "q2-js-exemplo-a",
-      "title": "Exemplo JS A",
-      "url": "https://example.com/q2-js-a",
-      "description": "Demonstração de scripts dinâmicos e eventos",
-      "categoryId": "2-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q2-js-exemplo-b",
-      "title": "Exemplo JS B",
-      "url": "https://example.com/q2-js-b",
-      "description": "Interatividade com manipulação avançada de DOM",
-      "categoryId": "2-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q2-js-exemplo-c",
-      "title": "Exemplo JS C",
-      "url": "https://example.com/q2-js-c",
-      "description": "Consumo de dados e lógica assíncrona",
-      "categoryId": "2-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
       "id": "q2-ai-easy-financas",
       "title": "Easy Finanças",
       "url": "https://miguel09231309.github.io/Financia/index.html",
@@ -480,47 +436,14 @@
       "clicks": 0
     },
     {
-      "id": "q3-html-exemplo-a",
-      "title": "Exemplo Q3 HTML A",
-      "url": "https://example.com/q3-html-a",
-      "description": "Projetos avançados de interfaces em HTML5",
+      "id": "q3-html-questionario",
+      "title": "Questionário",
+      "url": "https://miguel09231309.github.io/questionario/index.html",
+      "description": "Questionário interativo e formulários desenvolvido em HTML",
       "categoryId": "3-trimestre",
       "topic": "html",
       "badge": "HTML",
       "icon": "Code2",
-      "clicks": 0
-    },
-    {
-      "id": "q3-html-exemplo-b",
-      "title": "Exemplo Q3 HTML B",
-      "url": "https://example.com/q3-html-b",
-      "description": "Estruturação semântica e boas práticas para web",
-      "categoryId": "3-trimestre",
-      "topic": "html",
-      "badge": "HTML",
-      "icon": "Code2",
-      "clicks": 0
-    },
-    {
-      "id": "q3-js-exemplo-a",
-      "title": "Exemplo Q3 JS A",
-      "url": "https://example.com/q3-js-a",
-      "description": "Aplicações dinâmicas e módulos em JS do 3º trimestre",
-      "categoryId": "3-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
-      "clicks": 0
-    },
-    {
-      "id": "q3-js-exemplo-b",
-      "title": "Exemplo Q3 JS B",
-      "url": "https://example.com/q3-js-b",
-      "description": "Interatividade, persistência e manipulação de estado",
-      "categoryId": "3-trimestre",
-      "topic": "js",
-      "badge": "JS",
-      "icon": "Terminal",
       "clicks": 0
     }
   ],
@@ -600,7 +523,7 @@
   ]
 };
 
-      const STORAGE_KEY = 'portfolio_keth_standalone_v1';
+      const STORAGE_KEY = 'portfolio_keth_standalone_v3';
 
       // Estado do aplicativo
       let state = {
@@ -618,6 +541,11 @@
           if (saved) {
             const parsed = JSON.parse(saved);
             if (parsed && parsed.profile && Array.isArray(parsed.links) && parsed.links.length > 0) {
+              parsed.links = parsed.links.filter(l => 
+                !l.id?.includes('exemplo') && 
+                !l.url?.includes('example.com') && 
+                !l.title?.toLowerCase().includes('exemplo')
+              );
               return parsed;
             }
           }
@@ -1112,7 +1040,7 @@
                 </div>
 
                 <p class="text-xs text-neutral-400 leading-relaxed">
-                  Este portfólio roda 100% autônomo. Você pode copiar o JSON com os dados salvos ou restaurar os 38 projetos padrão se desejar.
+                  Este portfólio roda 100% autônomo. Você pode copiar o JSON com os dados salvos ou restaurar os projetos padrão se desejar.
                 </p>
 
                 <div class="relative">
@@ -1344,7 +1272,7 @@
         const resetDefaultBtn = document.getElementById('reset-default-data-btn');
         if (resetDefaultBtn) {
           resetDefaultBtn.addEventListener('click', () => {
-            if (confirm('Restaurar todos os 38 projetos originais de Keth?')) {
+            if (confirm('Restaurar todos os projetos originais de Keth?')) {
               state.isExportModalOpen = false;
               saveConfig(INITIAL_DATA);
               showToast('Dados restaurados para o padrão original!');

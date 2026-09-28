@@ -26,7 +26,7 @@ import { AddLinkInlineCard } from './components/AddLinkInlineCard';
 import { CodeSaverModal } from './components/CodeSaverModal';
 import { ShareModal } from './components/ShareModal';
 
-const STORAGE_KEY = 'portfolio_custom_config_v13';
+const STORAGE_KEY = 'portfolio_custom_config_v14';
 
 function getLinkTopic(link: PortfolioLink, categoryId: string): TrimesterTopic {
   if (link.topic) return link.topic;
@@ -50,11 +50,15 @@ export default function App() {
         if (
           parsed.profile && 
           Array.isArray(parsed.links) && 
-          Array.isArray(parsed.categories) && 
-          parsed.links.length >= INITIAL_PORTFOLIO_DATA.links.length
+          Array.isArray(parsed.categories)
         ) {
           parsed.categories = parsed.categories.filter((c: any) => c.id !== '4-trimestre');
-          parsed.links = parsed.links.filter((l: any) => l.categoryId !== '4-trimestre');
+          parsed.links = parsed.links.filter((l: any) => 
+            l.categoryId !== '4-trimestre' &&
+            !l.id?.includes('exemplo') &&
+            !l.url?.includes('example.com') &&
+            !l.title?.toLowerCase().includes('exemplo')
+          );
           return parsed;
         }
       }

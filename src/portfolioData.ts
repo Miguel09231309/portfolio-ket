@@ -410,54 +410,6 @@ export const INITIAL_PORTFOLIO_DATA: PortfolioConfig = {
       icon: "Compass",
       clicks: 0
     },
-    {
-      id: "q2-html-exemplo-c",
-      title: "Exemplo HTML C",
-      url: "https://example.com/q2-html-c",
-      description: "Projeto estrutural e semântico em HTML",
-      categoryId: "2-trimestre",
-      topic: "html",
-      badge: "HTML",
-      icon: "Code2",
-      clicks: 0
-    },
-
-    /* ========================================================================
-     * 2º TRIMESTRE — JAVASCRIPT (JS)
-     * ======================================================================== */
-    {
-      id: "q2-js-exemplo-a",
-      title: "Exemplo JS A",
-      url: "https://example.com/q2-js-a",
-      description: "Demonstração de scripts dinâmicos e eventos",
-      categoryId: "2-trimestre",
-      topic: "js",
-      badge: "JS",
-      icon: "Terminal",
-      clicks: 0
-    },
-    {
-      id: "q2-js-exemplo-b",
-      title: "Exemplo JS B",
-      url: "https://example.com/q2-js-b",
-      description: "Interatividade com manipulação avançada de DOM",
-      categoryId: "2-trimestre",
-      topic: "js",
-      badge: "JS",
-      icon: "Terminal",
-      clicks: 0
-    },
-    {
-      id: "q2-js-exemplo-c",
-      title: "Exemplo JS C",
-      url: "https://example.com/q2-js-c",
-      description: "Consumo de dados e lógica assíncrona",
-      categoryId: "2-trimestre",
-      topic: "js",
-      badge: "JS",
-      icon: "Terminal",
-      clicks: 0
-    },
 
     /* ========================================================================
      * 2º TRIMESTRE — GOOGLE AI
@@ -530,54 +482,6 @@ export const INITIAL_PORTFOLIO_DATA: PortfolioConfig = {
       topic: "html",
       badge: "HTML",
       icon: "Code2",
-      clicks: 0
-    },
-    {
-      id: "q3-html-exemplo-a",
-      title: "Exemplo Q3 HTML A",
-      url: "https://example.com/q3-html-a",
-      description: "Projetos avançados de interfaces em HTML5",
-      categoryId: "3-trimestre",
-      topic: "html",
-      badge: "HTML",
-      icon: "Code2",
-      clicks: 0
-    },
-    {
-      id: "q3-html-exemplo-b",
-      title: "Exemplo Q3 HTML B",
-      url: "https://example.com/q3-html-b",
-      description: "Estruturação semântica e boas práticas para web",
-      categoryId: "3-trimestre",
-      topic: "html",
-      badge: "HTML",
-      icon: "Code2",
-      clicks: 0
-    },
-
-    /* ========================================================================
-     * 3º TRIMESTRE — JAVASCRIPT (JS)
-     * ======================================================================== */
-    {
-      id: "q3-js-exemplo-a",
-      title: "Exemplo Q3 JS A",
-      url: "https://example.com/q3-js-a",
-      description: "Aplicações dinâmicas e módulos em JS do 3º trimestre",
-      categoryId: "3-trimestre",
-      topic: "js",
-      badge: "JS",
-      icon: "Terminal",
-      clicks: 0
-    },
-    {
-      id: "q3-js-exemplo-b",
-      title: "Exemplo Q3 JS B",
-      url: "https://example.com/q3-js-b",
-      description: "Interatividade, persistência e manipulação de estado",
-      categoryId: "3-trimestre",
-      topic: "js",
-      badge: "JS",
-      icon: "Terminal",
       clicks: 0
     }
   ],
